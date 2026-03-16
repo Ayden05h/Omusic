@@ -1,6 +1,6 @@
-// Import database and model
-const { sequelize, Track } = require("./setup");
-// Seed data
+require("dotenv").config();
+const { Track, sequelize } = require("./setup");
+
 const sampleTracks = [
   {
     songTitle: "Bohemian Rhapsody",
@@ -100,18 +100,17 @@ const sampleTracks = [
   }
 ];
 
-// Seed database with sample data
 async function seedDatabase() {
   try {
-    await sequelize.sync();
+    await sequelize.sync({ force: true }); // 👈 THIS FIXES EVERYTHING
+    console.log("Tables recreated.");
 
     await Track.bulkCreate(sampleTracks);
 
     console.log("Database seeded successfully.");
-
-    await sequelize.close();
+    process.exit();
   } catch (error) {
-    console.error("Error seeding database:", error);
+    console.error("Seeding error:", error);
   }
 }
 
